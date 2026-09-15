@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+  <meta name="app-version" content="21">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Enigma Mostrador</title>
+<meta name="theme-color" content="#1c1917">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preload" href="fonts/PinyonScript.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/InstrumentSans.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/BodoniModa.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ─── Portada: las dos puertas de la tablet (15/09/2026) ─────── -->
+<div id="pantallaInicio" class="portada oculto">
+  <header class="portada-top">
+    <div class="portada-logo">Enigma</div>
+    <div class="portada-sub">¿Qué vas a hacer?</div>
+    <button type="button" id="portadaUsuario" class="portada-usuario" title="Cambiar de persona"></button>
+  </header>
+  <div class="portada-botones">
+    <button type="button" id="puertaStock" class="puerta" aria-label="Control de stock: sumar lo que entra y restar lo que sale">
+      <span class="puerta-cab"><span class="puerta-ico"><svg class="i" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></span><span class="puerta-titulo">Control de stock</span></span>
+      <span class="puerta-centro">
+        <span class="puerta-num"><b id="puertaStockNum">—</b><small>prendas en el local</small></span>
+        <span id="puertaStockHoy" class="sl-hoy"></span>
+      </span>
+      <span class="puerta-desc"><span>Sumar y restar prendas · con tu PIN</span><b>Entrar ›</b></span>
+    </button>
+    <button type="button" id="puertaCarga" class="puerta" aria-label="Carga de mercadería: crear artículos, imprimir etiquetas y más">
+      <span class="puerta-cab"><span class="puerta-ico"><svg class="i" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 2.8 12V4.8A2 2 0 0 1 4.8 2.8H12a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8Z"/><path d="M7.5 7.5h.01"/></svg></span><span class="puerta-titulo">Carga de mercadería</span></span>
+      <span class="puerta-centro">
+        <span class="puerta-lista">
+          <span><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Crear artículos nuevos</span>
+          <span><svg class="i" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1"/><path d="M6 14h12v7H6z"/></svg> Imprimir etiquetas</span>
+          <span><svg class="i" viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7Z"/></svg> Tickets de cambio y devoluciones</span>
+          <span><svg class="i" viewBox="0 0 24 24"><path d="M12 2v20M17 6.5C17 4.6 14.8 3.5 12 3.5S7 4.6 7 6.5s2.2 2.8 5 3.5 5 1.6 5 3.5-2.2 3-5 3-5-1.1-5-3"/></svg> Precios y ofertas</span>
+        </span>
+      </span>
+      <span class="puerta-desc"><span>Con tu PIN, el de Loyverse</span><b>Entrar ›</b></span>
+    </button>
+    <button type="button" id="puertaCambios" class="puerta" aria-label="Cambios: devuelve prendas y se lleva otras">
+      <span class="puerta-cab"><span class="puerta-ico"><svg class="i" viewBox="0 0 24 24"><path d="M3 8h13a4 4 0 0 1 0 8h-2"/><path d="m6 5-3 3 3 3"/><path d="M21 16H8a4 4 0 0 1 0-8h2"/><path d="m18 19 3-3-3-3"/></svg></span><span class="puerta-titulo">Cambios</span></span>
+      <span class="puerta-centro">
+        <span class="puerta-lista">
+          <span><svg class="i" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-2"/></svg> Devuelve una o varias prendas</span>
+          <span><svg class="i" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/></svg> Se lleva otras</span>
+          <span><svg class="i" viewBox="0 0 24 24"><path d="M12 2v20M17 6.5C17 4.6 14.8 3.5 12 3.5S7 4.6 7 6.5s2.2 2.8 5 3.5 5 1.6 5 3.5-2.2 3-5 3-5-1.1-5-3"/></svg> Paga la diferencia o sale un vale</span>
+        </span>
+      </span>
+      <span class="puerta-desc"><span>Con el lector o por nombre</span><b>Entrar ›</b></span>
+    </button>
+  </div>
+  <div id="portadaEstado" class="portada-pie"></div>
+</div>
+
+<!-- ─── Control de stock del local ─────────────────────────────── -->
+<div id="pantallaStock" class="stock-pantalla oculto">
+  <header class="top">
+    <button type="button" id="slVolver" class="icono" title="Volver al inicio" aria-label="Volver al inicio"><svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="brand"><span class="logo">Enigma</span><span class="sub">Stock</span></div>
+    <div class="estado"><button type="button" id="slUsuario" class="chip usuario" title="Cambiar de persona"></button><span id="slFresco" class="chip"></span></div>
+  </header>
+  <main class="sl-cuerpo">
+    <section class="tarjeta sl-card" aria-label="Stock actual">
+      <div class="etq">Stock actual</div>
+      <div id="slNum" class="sl-num">—</div>
+      <div class="sl-sub">prendas en el local</div>
+      <div id="slHoy" class="sl-hoy"></div>
+      <div id="slNota" class="sl-nota oculto">Las ventas de hoy se descuentan del stock en el cierre de la noche.</div>
+    </section>
+    <section class="sl-acciones">
+      <button type="button" id="slEntro" class="sl-accion mas" aria-label="Entró mercadería: sumar prendas al stock"><span class="sl-accion-ico"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span><span class="sl-accion-t1">Entró mercadería</span><span class="sl-accion-t2">Sumar prendas al stock</span></span></button>
+      <button type="button" id="slSalio" class="sl-accion menos" aria-label="Salió mercadería: restar prendas, pide PIN"><span class="sl-accion-ico"><svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></span><span><span class="sl-accion-t1">Salió mercadería</span><span class="sl-accion-t2">Restar prendas · pide PIN</span></span></button>
+    </section>
+    <section class="tarjeta sl-recientes">
+      <div class="etq">Últimos movimientos</div>
+      <div id="slMovs"></div>
+    </section>
+  </main>
+  <div id="slHoja" class="sl-hoja oculto"></div>
+</div>
+
+<!-- ─── Cambios ─────────────────────────────────────────────────── -->
+<div id="pantallaCambios" class="stock-pantalla oculto">
+  <header class="top">
+    <button type="button" id="cmVolver" class="icono" title="Volver al inicio" aria-label="Volver al inicio"><svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="brand"><span class="logo">Enigma</span><span class="sub">Cambios</span></div>
+    <div class="estado"><span id="cmUsuario" class="chip usuario"></span></div>
+  </header>
+  <main id="cmCuerpo" class="cm-cuerpo"></main>
+</div>
+
+<!-- ─── PIN / login ───────────────────────────────────────────── -->
+<div id="pantallaPin" class="pin-pantalla">
+  <div class="pin-caja">
+    <div class="pin-logo">Enigma</div>
+    <div class="pin-sub">MOSTRADOR</div>
+    <div id="pinTitulo" class="pin-titulo">Ingresá tu PIN</div>
+    <div id="pinAyuda" class="pin-ayuda">El mismo número que usás en Loyverse</div>
+    <div id="pinPuntos" class="pin-puntos"><span></span><span></span><span></span><span></span></div>
+    <div class="pin-teclado">
+      <button data-d="1">1</button><button data-d="2">2</button><button data-d="3">3</button>
+      <button data-d="4">4</button><button data-d="5">5</button><button data-d="6">6</button>
+      <button data-d="7">7</button><button data-d="8">8</button><button data-d="9">9</button>
+      <button data-d="borrar" class="pin-aux">⌫</button><button data-d="0">0</button><button data-d="ok" class="pin-aux pin-ok">OK</button>
+    </div>
+    <div id="pinEstado" class="pin-estado"></div>
+    <div id="pinBootstrap" class="pin-bootstrap oculto">
+      <div class="pin-bootstrap-titulo">Primera vez: todavía nadie tiene PIN</div>
+      <div class="pin-bootstrap-texto">Loyverse no nos deja leer los PIN, así que hay que escribirlos una vez. Tocá tu nombre y creá tu PIN (el mismo que usás en la caja).</div>
+      <div id="pinBootstrapLista" class="pin-bootstrap-lista"></div>
+    </div>
+    <div id="pinVincular" class="pin-bootstrap oculto">
+      <div class="pin-bootstrap-titulo">Esta tablet todavía no está vinculada</div>
+      <div class="pin-bootstrap-texto">Diego genera un código desde su propia tablet (<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8 2 2 0 1 1-2.7 2.7 1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5 2 2 0 1 1-4 0 1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3 2 2 0 1 1-2.7-2.7 1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1 2 2 0 1 1 0-4 1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8 2 2 0 1 1 2.7-2.7 1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5 2 2 0 1 1 4 0 1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3 2 2 0 1 1 2.7 2.7 1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1 2 2 0 1 1 0 4 1.6 1.6 0 0 0-1.5 1Z"/></svg> Ajustes → Dispositivos). Dura 15 minutos y sirve una sola vez.</div>
+      <label class="vin-campo">Código <input id="vinCodigo" type="text" autocomplete="off" autocapitalize="characters" maxlength="9" placeholder="ABCD-2345"></label>
+      <label class="vin-campo">Nombre de esta tablet <input id="vinNombre" type="text" maxlength="40" placeholder="Tablet mostrador"></label>
+      <button type="button" id="vinOk" class="primario">Vincular</button>
+      <div id="vinEstado" class="pin-estado"></div>
+    </div>
+    <button id="pinInicio" class="enlace oculto">‹ Volver al inicio</button>
+    <button id="pinAjustes" class="enlace">Ajustes de conexión</button>
+  </div>
+</div>
+
+<!-- ─── App ───────────────────────────────────────────────────── -->
+<div id="app" class="app oculto">
+<div id="barraAlertas" class="barra-alertas oculto"></div>
+<header class="top">
+  <button id="btnInicio" class="icono" title="Volver al inicio" aria-label="Volver al inicio"><svg class="i" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-5.5h4V20"/></svg></button>
+  <div class="brand"><span class="logo">Enigma</span><span class="sub">Mostrador</span></div>
+  <button id="chipUsuario" class="chip usuario" title="Cambiar de usuario"><svg class="i" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="8" r="3.6"/></svg> —</button>
+  <div class="estado">
+    <button id="chipSync" class="chip" title="Estado del catálogo">● catálogo</button>
+    <button id="chipCola" class="chip cola oculto" title="Cambios esperando internet">⏳ 0</button>
+    <button id="chipImpresora" class="chip" title="Impresora de etiquetas"><svg class="i" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 2.8 12V4.8A2 2 0 0 1 4.8 2.8H12a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8Z"/><path d="M7.5 7.5h.01"/></svg> sin conectar</button>
+  </div>
+  <nav class="acciones-top">
+    <button id="btnTema" class="icono" title="Tema claro / oscuro"><svg class="i" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+    <button id="btnHistorial" class="icono" title="Últimas etiquetas"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 1.9"/></svg></button>
+    <button id="btnDiseno" class="icono" title="Diseño de etiqueta"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h6"/><circle cx="18" cy="12" r="2.2"/><circle cx="13" cy="17" r="2.2"/></svg></button>
+    <button id="btnAjustes" class="icono" title="Impresoras y ajustes"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8 2 2 0 1 1-2.7 2.7 1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5 2 2 0 1 1-4 0 1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3 2 2 0 1 1-2.7-2.7 1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1 2 2 0 1 1 0-4 1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8 2 2 0 1 1 2.7-2.7 1.6 1.6 0 0 0 1.8.3 1.6 1.6 0 0 0 1-1.5 2 2 0 1 1 4 0 1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3 2 2 0 1 1 2.7 2.7 1.6 1.6 0 0 0-.3 1.8 1.6 1.6 0 0 0 1.5 1 2 2 0 1 1 0 4 1.6 1.6 0 0 0-1.5 1Z"/></svg></button>
+  </nav>
+</header>
+
+<div id="avisoNuevo" class="aviso-nuevo oculto">
+  <div><b id="avisoNuevoTxt"></b></div>
+  <div class="aviso-costos-botones"><button id="avisoNuevoVer" class="secundario chico">Ver ficha</button><button id="avisoNuevoCerrar" class="secundario chico">✕</button></div>
+</div>
+
+<div id="avisoCostos" class="aviso-costos oculto">
+  <div><b id="avisoCostosTitulo">Jaque, faltan costos</b><span id="avisoCostosTexto"></span></div>
+  <div class="aviso-costos-botones"><button id="avisoCostosIr" class="primario chico">Cargarlos ahora</button><button id="avisoCostosLuego" class="secundario chico">Más tarde</button></div>
+</div>
+
+<main class="cuerpo">
+  <section class="panel izquierda">
+
+    <!-- Inicio / buscar -->
+    <div id="vistaBuscar" class="vista activa">
+      <div class="buscador">
+        <span class="lupa"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></span>
+        <input id="inputBuscar" type="text" inputmode="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+               placeholder="Buscar artículo, escanear etiqueta o ticket de cambio…" aria-label="Buscar">
+        <button id="btnLimpiar" class="limpiar" title="Borrar">✕</button>
+      </div>
+      <div id="resultados" class="resultados"></div>
+      <div id="inicio" class="inicio">
+        <div class="tiles">
+          <button class="tile principal" data-ir="nuevo"><span class="tile-ico"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><span class="tile-txt">Nuevo artículo</span><span class="tile-sub">Se carga en Loyverse y salen las etiquetas</span></button>
+          <div class="grupo-titulo"><span>EN EL MOSTRADOR</span><i></i></div>
+          <button class="tile" data-ir="ticketCambio"><span class="tile-ico"><svg class="i" viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7Z"/></svg></span><span class="tile-txt">Ticket de cambio</span><span class="tile-sub">para lo que se lleva de regalo</span></button>
+          <button class="tile" data-ir="cambio"><span class="tile-ico"><svg class="i" viewBox="0 0 24 24"><path d="M3 8h13a4 4 0 0 1 0 8h-2"/><path d="m6 5-3 3 3 3"/><path d="M21 16H8a4 4 0 0 1 0-8h2"/><path d="m18 19 3-3-3-3"/></svg></span><span class="tile-txt">Cambio o devolución</span><span class="tile-sub">leyendo el ticket de cambio</span></button>
+          <div class="grupo-titulo admin oculto"><span>SOLO ENCARGADA</span><i></i></div>
+          <button class="tile admin oculto" data-ir="costos"><span class="tile-ico"><svg class="i" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/></svg></span><span class="tile-txt">Costos</span><span class="tile-sub" id="tileCostosSub">de artículos nuevos</span><span id="tileCostosBadge" class="badge oculto">0</span></button>
+          <button class="tile admin oculto" data-ir="precios"><span class="tile-ico"><svg class="i" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 2.8 12V4.8A2 2 0 0 1 4.8 2.8H12a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8Z"/><path d="M7.5 7.5h.01"/></svg></span><span class="tile-txt">Precios en lote</span><span class="tile-sub">subir, bajar, redondear</span></button>
+          <button class="tile admin oculto" data-ir="equipo"><span class="tile-ico"><svg class="i" viewBox="0 0 24 24"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.4"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4M15.4 5.1a3.4 3.4 0 0 1 0 5.8"/></svg></span><span class="tile-txt">Equipo</span><span class="tile-sub">PIN y permisos</span></button>
+          <div class="grupo-titulo duenio oculto"><span>SOLO DIEGO</span><i></i></div>
+          <button class="tile duenio oculto" data-ir="bitacora"><span class="tile-ico"><svg class="i" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v18H6.5A2.5 2.5 0 0 1 4 18.5Z"/><path d="M8 8h7M8 12h7M8 16h4"/></svg></span><span class="tile-txt">Bitácora</span><span class="tile-sub">quién hizo qué · deshacer</span></button>
+        </div>
+        <div id="recientes" class="recientes oculto">
+          <div class="recientes-titulo">Cargados hoy <span id="recientesCant"></span></div>
+          <div id="recientesLista" class="recientes-lista"></div>
+          <button id="btnImprimirRecientes" class="secundario chico"><svg class="i" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1"/><path d="M6 14h12v7H6z"/></svg> Imprimir etiquetas de todos</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ficha -->
+    <div id="vistaFicha" class="vista">
+      <button class="volver" data-volver>‹ Volver</button>
+      <div class="ficha">
+        <div class="ficha-cab">
+          <div class="ficha-nombre" id="fNombre"></div>
+          <span id="fOferta" class="pill oferta oculto">OFERTA</span>
+        </div>
+        <div class="ficha-datos">
+          <div><span class="etq">Código</span><span id="fSku" class="mono grande-mono"></span></div>
+          <div><span class="etq">Precio</span><span id="fPrecio" class="precio"></span><span id="fPrecioAnt" class="tachado oculto"></span></div>
+          <div><span class="etq">Categoría</span><span id="fCategoria"></span></div>
+          <div id="fStockBox"><span class="etq">Stock</span><span id="fStock" class="stock">—</span></div>
+        </div>
+        <div class="ficha-acciones">
+          <button id="btnCambiarPrecio" class="secundario admin oculto"><svg class="i" viewBox="0 0 24 24"><path d="M12 2v20M17 6.5C17 4.6 14.8 3.5 12 3.5S7 4.6 7 6.5s2.2 2.8 5 3.5 5 1.6 5 3.5-2.2 3-5 3-5-1.1-5-3"/></svg> Cambiar precio</button>
+          <button id="btnOferta" class="secundario admin oculto"><svg class="i" viewBox="0 0 24 24"><path d="M12 3c1.5 3.5 5 4.5 5 8.5A5 5 0 0 1 7 12c0-1.5.5-2.5 1.5-3.5C9 11 11 11 11 11s-1.5-4 1-8Z"/></svg> Poner en oferta</button>
+          <button id="btnStock" class="secundario"><svg class="i" viewBox="0 0 24 24"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg> Ingresar stock</button>
+          <button id="btnEditarNombre" class="secundario"><svg class="i" viewBox="0 0 24 24"><path d="M17 3a2.8 2.8 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg> Editar nombre</button>
+          <button id="btnCosto" class="secundario admin oculto"><svg class="i" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/></svg> Costo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nuevo -->
+    <div id="vistaNuevo" class="vista">
+      <button class="volver" data-volver>‹ Volver</button>
+      <form id="formNuevo" class="form tarjeta" autocomplete="off">
+        <h2>Nuevo artículo</h2>
+        <label>¿Qué es?
+          <input id="nNombre" type="text" required maxlength="120" autocapitalize="sentences" placeholder="Ej: Buzo oversize gris">
+        </label>
+        <div id="nAviso" class="aviso oculto"></div>
+        <div class="dos">
+          <label>Precio
+            <div class="campo-precio"><span>$</span><input id="nPrecio" type="number" inputmode="numeric" min="0" step="1" required placeholder="0"></div>
+          </label>
+          <label class="admin oculto">Costo (solo vos lo ves)
+            <div class="campo-precio"><span>$</span><input id="nCosto" type="number" inputmode="numeric" min="0" step="1" placeholder="opcional"></div>
+          </label>
+        </div>
+        <label>Categoría
+          <div id="nCategorias" class="chips"></div>
+          <div id="nCatNueva" class="cat-nueva oculto"><input id="nCatNombre" type="text" maxlength="40" placeholder="Nombre de la categoría nueva"><button type="button" id="nCatCrear" class="secundario chico">Crear</button></div>
+        </label>
+        <div class="dos">
+          <label id="nStockLabel">¿Cuántas entran? (stock)
+            <div class="stepper"><button type="button" data-step="nStock" data-d="-1">−</button><input id="nStock" type="number" inputmode="numeric" min="0" value="1"><button type="button" data-step="nStock" data-d="1"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+          </label>
+          <label>Etiquetas a imprimir
+            <div class="stepper"><button type="button" data-step="nEtiquetas" data-d="-1">−</button><input id="nEtiquetas" type="number" inputmode="numeric" min="0" value="1"><button type="button" data-step="nEtiquetas" data-d="1"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></div>
+          </label>
+        </div>
+        <div class="fila-sku">Código <b id="nSku" class="mono">—</b> <span id="nNombreLoy"></span></div>
+        <button type="submit" id="btnCrear" class="primario grande">Crear e imprimir</button>
+      </form>
+    </div>
+
+    <!-- Ticket de cambio -->
+    <div id="vistaTicketCambio" class="vista">
+      <button class="volver" data-volver>‹ Volver</button>
+      <div class="tarjeta">
+        <h2><svg class="i" viewBox="0 0 24 24"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7M12 7H7.5a2.5 2.5 0 1 1 0-5C11 2 12 7 12 7ZM12 7h4.5a2.5 2.5 0 1 0 0-5C13 2 12 7 12 7Z"/></svg> Ticket de cambio</h2>
+        <div class="pasos"><span class="paso activo" data-paso="1">1 Venta</span><span class="paso" data-paso="2">2 Artículos</span><span class="paso" data-paso="3">3 Imprimir</span></div>
+        <div id="tcPaso1">
+          <p class="texto">Elegí la venta que acaban de hacer, o tipeá el número del ticket de Loyverse.</p>
+          <div class="fila-busca"><input id="tcNumero" type="text" inputmode="numeric" placeholder="Número de ticket (ej. 4-3014)"><button id="tcBuscar" class="secundario">Buscar</button></div>
+          <div id="tcVentas" class="ventas-lista"><div class="vacio">Cargando ventas de hoy…</div></div>
+        </div>
+        <div id="tcPaso2" class="oculto">
+          <div id="tcVentaCab" class="venta-cab"></div>
+          <p class="texto">Marcá qué artículos van de regalo (sin precio en el ticket):</p>
+          <div id="tcItems" class="items-check"></div>
+          <div class="dlg-botones"><button id="tcAtras" class="secundario">‹ Otra venta</button><button id="tcImprimir" class="primario"><svg class="i" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1"/><path d="M6 14h12v7H6z"/></svg> Imprimir ticket de cambio</button></div>
+        </div>
+        <div id="tcPaso3" class="oculto">
+          <div class="ok-grande">✓</div>
+          <p class="texto centrado" id="tcListo">Ticket de cambio impreso.</p>
+          <pre id="tcPreview" class="ticket-preview"></pre>
+          <div class="dlg-botones centrado"><button id="tcOtra" class="secundario">Otro ticket</button><button id="tcReimprimir" class="secundario">Reimprimir</button><button id="tcFin" class="primario">Listo</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cambio / devolución -->
+    <div id="vistaCambio" class="vista">
+      <button class="volver" data-volver>‹ Volver</button>
+      <div class="tarjeta">
+        <h2><svg class="i" viewBox="0 0 24 24"><path d="M3 8h13a4 4 0 0 1 0 8h-2"/><path d="m6 5-3 3 3 3"/><path d="M21 16H8a4 4 0 0 1 0-8h2"/><path d="m18 19 3-3-3-3"/></svg> Cambio o devolución</h2>
+        <div id="cbPaso1">
+          <p class="texto">Escaneá el código del ticket de cambio o tipeá el número de la venta.</p>
+          <div class="fila-busca"><input id="cbNumero" type="text" inputmode="numeric" placeholder="Ticket de cambio o número de venta"><button id="cbBuscar" class="primario">Buscar</button></div>
+          <div id="cbEstado" class="texto"></div>
+        </div>
+        <div id="cbPaso2" class="oculto">
+          <div id="cbVentaCab" class="venta-cab"></div>
+          <div id="cbAvisos"></div>
+          <h3>¿Qué devuelve?</h3>
+          <div id="cbDevolver" class="items-check"></div>
+          <h3>¿Qué se lleva a cambio? <span class="texto">(escaneá la etiqueta o buscá)</span></h3>
+          <div class="fila-busca"><input id="cbBuscarArt" type="text" placeholder="Buscar artículo o escanear…"><button id="cbLimpiarArt" class="secundario">✕</button></div>
+          <div id="cbSugerencias" class="sugerencias"></div>
+          <div id="cbEntregar" class="items-check"></div>
+          <div class="resumen-cambio">
+            <div><span class="etq">Devuelve</span><b id="cbTotDev">$ 0</b></div>
+            <div><span class="etq">Se lleva</span><b id="cbTotEnt">$ 0</b></div>
+            <div class="dif"><span class="etq" id="cbDifEtq">Diferencia</span><b id="cbDif">$ 0</b></div>
+          </div>
+          <div id="cbPagoBox"><span class="etq">Medio de pago de la diferencia</span><div id="cbPagos" class="chips"></div></div>
+          <div class="dlg-botones"><button id="cbCancelar" class="secundario">Cancelar</button><button id="cbRegistrar" class="primario">Registrar en Loyverse</button></div>
+        </div>
+        <div id="cbPaso3" class="oculto">
+          <div class="ok-grande">✓</div>
+          <p class="texto centrado" id="cbListo"></p>
+          <div id="cbDetalle" class="texto centrado"></div>
+          <div class="dlg-botones centrado"><button id="cbComprobante" class="secundario"><svg class="i" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1"/><path d="M6 14h12v7H6z"/></svg> Imprimir comprobante</button><button id="cbFin" class="primario">Listo</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Costos (admin) -->
+    <div id="vistaCostos" class="vista">
+      <button class="volver" data-volver>‹ Volver</button>
+      <div class="tarjeta">
+        <h2><svg class="i" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 12h.01M18 12h.01"/></svg> Costos de compra</h2>
+        <p class="texto">Solo vos ves esto. Se piden únicamente los artículos nuevos (códigos 20001 en adelante); la mercadería vieja se licúa sola. Tipeá el costo y tocá Enter o ✓: pasa solo al siguiente.</p>
+        <div class="fila-busca"><input id="coFiltro" type="text" placeholder="Filtrar por nombre o código…"><span id="coResumen" class="texto"></span></div>
+        <div id="coLista" class="costos-lista"></div>
+        <details class="avanzado"><summary>Ver los que ya tienen costo</summary><div id="coConCosto" class="costos-lista compacta"></div></details>
+      </div>
+    </div>
+
+    <!-- Precios en lote (admin) -->
+    <div id="vistaPrecios" class="vista">
+      <button class="volver" data-volver>‹ Volver</button>
+      <div class="tarjeta">
+        <h2><svg class="i" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 2.8 12V4.8A2 2 0 0 1 4.8 2.8H12a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8Z"/><path d="M7.5 7.5h.01"/></svg> Precios en lote</h2>
+        <div class="etq">1. ¿A qué artículos?</div>
+        <div id="prCategorias" class="chips"></div>
+        <div class="fila-busca"><input id="prBuscar" type="text" placeholder="O buscar y marcar uno por uno…"><span id="prSel" class="texto">0 marcados</span></div>
+        <div id="prLista" class="items-check compacta"></div>
+        <div class="etq">2. ¿Qué cambio?</div>
+        <div class="chips" id="prModo"><button class="chip-sel activo" data-m="porcentaje">Subir/bajar %</button><button class="chip-sel" data-m="monto">Sumar/restar $</button><button class="chip-sel" data-m="fijo">Poner precio fijo</button></div>
+        <div class="dos">
+          <label>Valor <input id="prValor" type="number" inputmode="decimal" step="any" placeholder="Ej: 10 (o -10)"></label>
+          <label>Redondear a <select id="prRedondeo"><option value="0">No redondear</option><option value="100">$100</option><option value="500" selected>$500</option><option value="1000">$1.000</option></select></label>
+        </div>
+        <div id="prPreview" class="preview-precios"></div>
+        <div class="dlg-botones"><button id="prAplicar" class="primario" disabled>Aplicar a 0 artículos</button></div>
+        <div id="prProgreso" class="progreso oculto"><div class="barra"><div id="prBarra"></div></div><span id="prProgTxt"></span></div>
+        <div id="prDespues" class="oculto"><p class="texto">Las etiquetas pegadas quedaron viejas. Podés reimprimirlas ahora (una por artículo) y cambiarlas:</p><button id="prReimprimir" class="primario"><svg class="i" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1"/><path d="M6 14h12v7H6z"/></svg> Reimprimir etiquetas de los cambiados</button></div>
+      </div>
+    </div>
+
+    <!-- Bitácora (solo el dueño) -->
+    <div id="vistaBitacora" class="vista">
+      <button class="volver" data-volver>‹ Volver</button>
+      <div class="tarjeta">
+        <h2><svg class="i" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v18H6.5A2.5 2.5 0 0 1 4 18.5Z"/><path d="M8 8h7M8 12h7M8 16h4"/></svg> Bitácora</h2>
+        <p class="texto">Todo lo que se hizo desde la tablet, con nombre y hora. Esto lo ves solo vos. Las acciones que se pueden deshacer tienen su botón; deshacer vuelve el artículo exactamente como estaba.</p>
+        <div class="fila-busca"><input id="biFiltro" type="text" placeholder="Filtrar por persona, artículo o código…"><button id="biActualizar" class="secundario">Actualizar</button></div>
+        <div id="biLista" class="bita-lista">Cargando…</div>
+      </div>
+    </div>
+
+    <!-- Equipo (admin) -->
+    <div id="vistaEquipo" class="vista">
+      <button class="volver" data-volver>‹ Volver</button>
+      <div class="tarjeta">
+        <h2><svg class="i" viewBox="0 0 24 24"><path d="M16 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10" cy="8" r="3.4"/><path d="M20 20v-1.5a3.5 3.5 0 0 0-2.6-3.4M15.4 5.1a3.4 3.4 0 0 1 0 5.8"/></svg> Equipo</h2>
+        <p class="texto">La lista viene de Loyverse. <b>Loyverse no nos deja leer los PIN</b>: acá se escribe una vez el mismo número que cada persona usa en la caja, y su permiso. "Encargada" ve costos, precios en lote y equipo; "Vendedora" hace todo lo demás.</p>
+        <div id="eqLista" class="equipo-lista">Cargando…</div>
+        <details class="avanzado"><summary>Preparar stock de los artículos viejos (una sola vez)</summary>
+          <p class="texto">Pone control de stock a todos los artículos que todavía no lo tienen, con un stock alto, para que sigan vendiéndose hasta agotarse. Los nuevos ya nacen con su stock justo.</p>
+          <div class="aviso"><svg class="i" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17h.01"/></svg> Esto se hace <b>una sola vez y recién el día del cambio</b>, cuando Diego apague la carga vieja de mercadería. Antes de eso, no lo toques.</div>
+          <div class="fila-busca"><label>Stock a poner <input id="stValor" type="number" value="999" min="1"></label><button id="stPreparar" class="secundario">Preparar <span id="stCant"></span> artículos</button></div>
+          <div id="stProgreso" class="progreso oculto"><div class="barra"><div id="stBarra"></div></div><span id="stProgTxt"></span></div>
+        </details>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Columna derecha: etiqueta -->
+  <aside class="panel derecha">
+    <div class="etiqueta-card">
+      <div class="etiqueta-titulo">Etiqueta <span id="etqTipo" class="pill oculto">OFERTA</span></div>
+      <div class="etiqueta-marco"><canvas id="preview" width="400" height="240"></canvas></div>
+      <div class="etiqueta-info" id="previewInfo">Elegí o creá un artículo para ver su etiqueta.</div>
+      <div class="cantidad">
+        <button id="cantMenos" class="paso-btn" aria-label="Menos">−</button>
+        <input id="cantidad" type="number" inputmode="numeric" min="1" max="200" value="1" aria-label="Cantidad de etiquetas">
+        <button id="cantMas" class="paso-btn" aria-label="Más"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+        <span class="cant-etq">etiquetas</span>
+      </div>
+      <button id="btnImprimir" class="primario grande imprimir" disabled><svg class="i" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1"/><path d="M6 14h12v7H6z"/></svg> Imprimir</button>
+      <div id="msgImprimir" class="msg"></div>
+    </div>
+  </aside>
+</main>
+</div>
+
+<!-- ─── Diálogos ─────────────────────────────────────────────── -->
+
+<dialog id="dlgNumero" class="dlg">
+  <form method="dialog" class="form">
+    <h3 id="dlgNumeroTitulo">Nuevo precio</h3>
+    <p id="dlgNumeroAyuda" class="texto"></p>
+    <div class="campo-precio grande"><span id="dlgNumeroPrefijo">$</span><input id="dlgNumeroInput" type="number" inputmode="numeric" min="0" step="1" required></div>
+    <div class="dlg-botones">
+      <button type="button" id="dlgNumeroCancelar" class="secundario">Cancelar</button>
+      <button value="ok" id="dlgNumeroOk" class="primario">Guardar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlgNombre" class="dlg">
+  <form method="dialog" class="form">
+    <h3>Editar nombre</h3>
+    <input id="eNombre" type="text" required maxlength="120">
+    <div class="dlg-botones"><button type="button" id="eNombreCancelar" class="secundario">Cancelar</button><button value="ok" id="eNombreOk" class="primario">Guardar</button></div>
+  </form>
+</dialog>
+
+<dialog id="dlgDuplicado" class="dlg">
+  <div class="form">
+    <h3>Ya hay artículos parecidos</h3>
+    <p class="texto">Antes de crear otro, fijate si es alguno de estos (tocá para abrirlo):</p>
+    <div id="dupLista" class="dup-lista"></div>
+    <div class="dlg-botones"><button id="dupCancelar" class="secundario">Volver</button><button id="dupCrearIgual" class="peligro">Crear igual, es otro</button></div>
+  </div>
+</dialog>
+
+<dialog id="dlgCatalogo" class="dlg">
+  <div class="form">
+    <h3>Estado del catálogo</h3>
+    <div class="renov">
+      <div class="renov-num"><b id="cxNuevos">0</b><span>con el sistema nuevo</span><small id="cxNuevosDet">código 20001 en adelante</small></div>
+      <div class="renov-num"><b id="cxViejos">0</b><span>de la base vieja</span><small>faltan rotar</small></div>
+    </div>
+    <div class="barra grande"><div id="cxBarra"></div></div>
+    <p class="texto" id="cxTexto"></p>
+    <p class="texto" id="cxActualizado"></p>
+    <div class="dlg-botones"><button id="cxActualizar" class="secundario">Actualizar ahora</button><button id="cxCerrar" class="primario">Cerrar</button></div>
+  </div>
+</dialog>
+
+<dialog id="dlgHistorial" class="dlg ancho">
+  <div class="form">
+    <h3>Últimas etiquetas impresas</h3>
+    <div id="histLista" class="hist-lista">Cargando…</div>
+    <div class="dlg-botones"><button id="histCerrar" class="secundario">Cerrar</button></div>
+  </div>
+</dialog>
+
+<dialog id="dlgEquipoEditar" class="dlg">
+  <form id="formEquipo" class="form" autocomplete="off">
+    <h3 id="eqTitulo">Integrante</h3>
+    <label>Nombre <input id="eqNombre" type="text" required maxlength="40"></label>
+    <label>Permiso
+      <div class="chips"><button type="button" class="chip-sel" data-rol="vendedora">Vendedora</button><button type="button" class="chip-sel" data-rol="admin">Encargada</button></div>
+    </label>
+    <div class="dos">
+      <label>PIN (igual que en Loyverse) <input id="eqPin" type="password" inputmode="numeric" pattern="\d{4,6}" maxlength="6" placeholder="4 dígitos"></label>
+      <label>Repetir PIN <input id="eqPin2" type="password" inputmode="numeric" pattern="\d{4,6}" maxlength="6"></label>
+    </div>
+    <p id="eqEstado" class="texto"></p>
+    <div class="dlg-botones"><button type="button" id="eqQuitar" class="peligro oculto">Quitar</button><button type="button" id="eqCancelar" class="secundario">Cancelar</button><button type="submit" class="primario">Guardar</button></div>
+  </form>
+</dialog>
+
+<dialog id="dlgDiseno" class="dlg ancho">
+  <form id="formDiseno" class="form diseno" autocomplete="off">
+    <h3>Diseño de la etiqueta</h3>
+    <div class="diseno-grid">
+      <div class="diseno-campos">
+        <label>Encabezado <input id="dEncabezado" type="text" maxlength="30"></label>
+        <div class="dos">
+          <label>Tamaño encabezado <input id="dEncTam" type="number" min="0" max="80" step="1"></label>
+          <label>Tipografía
+            <select id="dEncFuente">
+              <option value="'Pinyon Script', Georgia, serif">La del logo de Enigma</option>
+              <option value="italic 'Georgia', 'Times New Roman', serif">Clásica (cursiva)</option>
+              <option value="'Georgia', 'Times New Roman', serif">Clásica</option>
+              <option value="'Arial', 'Roboto', sans-serif">Moderna</option>
+              <option value="bold 'Arial', 'Roboto', sans-serif">Moderna negrita</option>
+            </select>
+          </label>
+        </div>
+        <label>Engrosar el encabezado <input id="dEncTrazo" type="number" min="0" max="3" step="0.1"></label>
+        <p class="texto">La letra del logo tiene trazos finos y la etiquetadora es térmica: si al imprimir se ven cortados, subí este número de a 0,2.</p>
+        <div class="dos">
+          <label>Tamaño nombre <input id="dNomTam" type="number" min="8" max="60" step="1"></label>
+          <label>Líneas máx. nombre <input id="dNomLineas" type="number" min="1" max="3" step="1"></label>
+        </div>
+        <div class="dos">
+          <label>Tamaño precio <input id="dPreTam" type="number" min="8" max="90" step="1"></label>
+          <label>Formato precio
+            <select id="dPreFormato"><option value="$ #">$ 12.000</option><option value="$#">$12.000</option><option value="# $">12.000 $</option><option value="#">12.000</option></select>
+          </label>
+        </div>
+        <div class="dos">
+          <label>Alto código de barras <input id="dBarAlto" type="number" min="20" max="150" step="1"></label>
+          <label>Grosor barras (puntos) <input id="dBarMod" type="number" min="1" max="4" step="1"></label>
+        </div>
+        <div class="dos">
+          <label class="check"><input id="dBarTexto" type="checkbox"> Número debajo del código</label>
+          <label class="check"><input id="dMarco" type="checkbox"> Línea divisoria</label>
+        </div>
+        <div class="dos">
+          <label>Texto etiqueta oferta <input id="dOfertaTexto" type="text" maxlength="20"></label>
+          <label class="check"><input id="dOfertaTachado" type="checkbox"> Mostrar precio anterior tachado</label>
+        </div>
+        <div class="dos">
+          <label>Ancho etiqueta (mm) <input id="dAnchoMm" type="number" min="20" max="110" step="1"></label>
+          <label>Alto etiqueta (mm) <input id="dAltoMm" type="number" min="15" max="110" step="1"></label>
+        </div>
+        <div class="dos">
+          <label>Margen (mm) <input id="dMargenMm" type="number" min="0" max="10" step="0.5"></label>
+          <label>Separación entre etiquetas (mm) <input id="dGapMm" type="number" min="0" max="10" step="0.5"></label>
+        </div>
+        <label class="check"><input id="dNombrePrecio" type="checkbox"> En Loyverse, agregar el precio al final del nombre («Camisas $30»), como hasta ahora</label>
+        <div class="dos">
+          <label>Ticket de cambio: días de validez <input id="dDiasCambio" type="number" min="1" max="365" step="1"></label>
+          <label>Texto al pie del ticket de cambio <input id="dTicketTexto" type="text" maxlength="80" placeholder="Ej: Cambios con este ticket, sin excepción"></label>
+        </div>
+        <details class="avanzado">
+          <summary>Ajustes de impresora (avanzado)</summary>
+          <div class="dos">
+            <label>Oscuridad (1–15) <input id="dDensidad" type="number" min="1" max="15" step="1"></label>
+            <label>Velocidad (1–6) <input id="dVelocidad" type="number" min="1" max="6" step="1"></label>
+          </div>
+          <div class="dos">
+            <label>Dirección <select id="dDireccion"><option value="1">Normal</option><option value="0">Invertida</option></select></label>
+            <label class="check"><input id="dInvertirBits" type="checkbox"> Invertir blanco/negro (si sale en negativo)</label>
+          </div>
+          <label>Ancho del papel de tickets <select id="dTicketAncho"><option value="32">58 mm (32 caracteres)</option><option value="48">80 mm (48 caracteres)</option></select></label>
+        </details>
+      </div>
+      <div class="diseno-preview">
+        <div class="chips" id="dVista"><button type="button" class="chip-sel activo" data-v="normal">Normal</button><button type="button" class="chip-sel" data-v="oferta">Oferta</button></div>
+        <div class="etiqueta-marco"><canvas id="previewDiseno" width="400" height="240"></canvas></div>
+        <div class="hint">Vista previa con un artículo de ejemplo.</div>
+      </div>
+    </div>
+    <div class="dlg-botones">
+      <button type="button" id="dRestaurar" class="secundario">Valores de fábrica</button>
+      <button type="button" id="dCancelar" class="secundario">Cancelar</button>
+      <button type="submit" class="primario">Guardar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlgAjustes" class="dlg ancho">
+  <div class="form">
+    <h3>Impresoras y ajustes</h3>
+    <div class="ajustes-bloque">
+      <div class="etq"><svg class="i" viewBox="0 0 24 24"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-7.2-7.2A2 2 0 0 1 2.8 12V4.8A2 2 0 0 1 4.8 2.8H12a2 2 0 0 1 1.4.6l7.2 7.2a2 2 0 0 1 0 2.8Z"/><path d="M7.5 7.5h.01"/></svg> Impresora de etiquetas — cómo se imprime</div>
+      <div id="transportes" class="chips">
+        <button type="button" class="chip-sel" data-t="usb">Cable USB</button>
+        <button type="button" class="chip-sel" data-t="ble">Bluetooth</button>
+        <button type="button" class="chip-sel" data-t="rawbt">App RawBT</button>
+        <button type="button" class="chip-sel" data-t="share">App de Xprinter (compartir)</button>
+        <button type="button" class="chip-sel" data-t="sistema">Impresión del sistema</button>
+      </div>
+      <div id="transporteAyuda" class="texto"></div>
+      <div class="dlg-botones izq">
+        <button type="button" id="btnConectar" class="primario">Conectar impresora</button>
+        <button type="button" id="btnPrueba" class="secundario">Imprimir etiqueta de prueba</button>
+        <span id="estadoConexion" class="texto"></span>
+      </div>
+    </div>
+    <div class="ajustes-bloque">
+      <div class="etq"><svg class="i" viewBox="0 0 24 24"><path d="M4 4h16v16l-2.7-1.6L14.7 20 12 18.4 9.3 20l-2.6-1.6L4 20Z"/><path d="M8 9h8M8 13h5"/></svg> Impresora de tickets (la de Loyverse) — cómo se imprime</div>
+      <div id="transportesTicket" class="chips">
+        <button type="button" class="chip-sel" data-t="rawbt">App RawBT</button>
+        <button type="button" class="chip-sel" data-t="ble">Bluetooth</button>
+        <button type="button" class="chip-sel" data-t="usb">Cable USB</button>
+      </div>
+      <div id="transporteTicketAyuda" class="texto"></div>
+      <div class="dlg-botones izq">
+        <button type="button" id="btnConectarTicket" class="primario">Conectar impresora de tickets</button>
+        <button type="button" id="btnPruebaTicket" class="secundario">Imprimir ticket de prueba</button>
+        <span id="estadoConexionTicket" class="texto"></span>
+      </div>
+    </div>
+    <div class="ajustes-bloque">
+      <div class="etq">Comodidad</div>
+      <label>Volver a pedir el PIN después de
+        <select id="sBloqueo">
+          <option value="15">15 minutos sin uso</option>
+          <option value="60">1 hora sin uso</option>
+          <option value="240">4 horas sin uso</option>
+          <option value="0">Nunca (solo al cambiar de usuario)</option>
+        </select>
+      </label>
+      <div class="dlg-botones izq"><span class="texto">Con el PIN cargado en esta tablet, desbloquear es instantáneo y funciona sin internet.</span></div>
+    </div>
+    <div class="ajustes-bloque">
+      <div class="etq">Catálogo</div>
+      <div class="dlg-botones izq">
+        <button type="button" id="btnResync" class="secundario">Recargar catálogo completo desde Loyverse</button>
+        <span id="infoCatalogo" class="texto"></span>
+      </div>
+    </div>
+    <div class="ajustes-bloque duenio oculto">
+      <div class="etq">Puesta en marcha</div>
+      <label class="check"><input id="sEnUso" type="checkbox"> Sistema <b>en uso real</b> (destrabar precios en lote, cambios/devoluciones, preparar stock y dar de baja)</label>
+      <p class="texto">Mientras esté apagado, esas funciones quedan bloqueadas para todos: es el modo prueba. Prendelo el día que apagues la carga vieja de mercadería.</p>
+    </div>
+    <div class="ajustes-bloque">
+      <div class="etq">Diagnóstico</div>
+      <div id="diagTexto" class="diag"></div>
+      <div class="dlg-botones izq"><button type="button" id="btnDiag" class="secundario">Revisar y enviar a Diego</button><span id="diagEstado" class="texto"></span></div>
+    </div>
+    <details class="ajustes-bloque avanzado">
+      <summary>Conexión con el sistema (solo Diego)</summary>
+      <label>Dirección de la API <input id="sApi" type="url" placeholder="https://script.google.com/macros/s/…/exec"></label>
+      <div id="sVinculada" class="texto"></div>
+      <label>Clave maestra <input id="sKey" type="password" autocomplete="off" placeholder="•••••••• (guardada — escribí solo si la vas a cambiar)"></label>
+      <label>Nombre de este dispositivo <input id="sDispositivo" type="text" maxlength="40" placeholder="Tablet mostrador"></label>
+      <div class="dlg-botones izq"><button type="button" id="sGuardar" class="primario">Guardar conexión</button><span id="sEstado" class="texto"></span></div>
+    </details>
+    <details class="ajustes-bloque duenio">
+      <summary>Dispositivos y seguridad (solo Diego)</summary>
+      <div class="etq">Tablets vinculadas</div>
+      <div id="dvLista" class="equipo-lista"></div>
+      <div class="etq">Esta tablet</div>
+      <div class="dlg-botones izq"><button type="button" id="dvVincularEsta" class="primario">Vincular esta tablet ahora</button><span id="dvEstaEstado" class="texto"></span></div>
+      <div class="texto">Le da una clave propia a este aparato. Te va a pedir el PIN de nuevo una vez.</div>
+      <div class="etq">Vincular OTRA tablet</div>
+      <label>Cómo se va a llamar <input id="dvNombre" type="text" maxlength="40" placeholder="Tablet mostrador"></label>
+      <div class="dlg-botones izq"><button type="button" id="dvGenerar" class="primario">Generar código</button></div>
+      <div id="dvCodigo" class="diag"></div>
+      <label class="fila-check"><input type="checkbox" id="sSoloDispositivos"> Solo dispositivos vinculados (la clave maestra deja de abrir)</label>
+      <div class="texto">Prendelo cuando las tablets que usás ya estén vinculadas. Desde ese momento, una clave copiada o un link compartido no sirven para nada.</div>
+    </details>
+    <div class="dlg-botones"><button type="button" id="ajCerrar" class="secundario">Cerrar</button></div>
+  </div>
+</dialog>
+
+<div id="toast" class="toast"></div>
+<div id="cargando" class="cargando oculto"><div class="spinner"></div><div id="cargandoTxt">Un segundo…</div></div>
+
+<script src="vendor/JsBarcode.code128.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
